@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mombasa Logistics Tools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { background: #1F4E79; color: white; padding: 25px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .header p { margin: 5px 0 0; opacity: 0.8; font-size: 13px; }
+        .card { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card h2 { color: #1F4E79; margin-top: 0; font-size: 16px; }
+        label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 15px; box-sizing: border-box; }
+        .btn { background: #1F4E79; color: white; padding: 12px; width: 100%; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        .btn:hover { background: #163d61; }
+        .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .result-row:last-child { border-bottom: none; font-weight: bold; font-size: 15px; color: #1F4E79; }
+        .result-label { color: #666; }
+        .total-box { background: #1F4E79; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
+        .total-box h3 { margin: 0; font-size: 14px; opacity: 0.8; }
+        .total-box p { margin: 5px 0 0; font-size: 26px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🚢 Kenya Car Import Duty Calculator</h1>
+        <p>© 2026 Mombasa Logistics Tools | Built by Fredrick Mbindyo</p>
+    </div>
+    <div class="card">
+        <h2>📋 Enter Car Details</h2>
+        <form action="/calculate" method="POST">
+            <label>Select Car</label>
+            <select name="car_choice" required>
+                <option value="">-- Select a car --</option>
+                {% for key, car in cars.items() %}
+                <option value="{{ key }}">{{ car.name }} — KSh {{ "{:,.0f}".format(car.fob) }}</option>
+                {% endfor %}
+            </select>
+            <label>Freight Cost (KSh)</label>
+            <input type="number" name="freight" placeholder="e.g. 163916" value="163916" required />
+            <label>Insurance (KSh)</label>
+            <input type="number" name="insurance" placeholder="e.g. 13290" value="13290" required />
+            <button type="submit" class="btn">Calculate Import Costs</button>
+        </form>
+    </div>
+    {% if result %}
+    <div class="card">
+        <h2>📊 Import Report — {{ result.car_name }}</h2>
+        <div class="result-row"><span class="result-label">FOB Value</span><span>KSh {{ "{:,.0f}".format(result.fob) }}</span></div>
+        <div class="result-row"><span class="result-label">Freight</span><span>KSh {{ "{:,.0f}".format(result.freight) }}</span></div>
+        <div class="result-row"><span class="result-label">Insurance</span><span>KSh {{ "{:,.0f}".format(result.insurance) }}</span></div>
+        <div class="result-row"><span class="result-label">CIF Value</span><span>KSh {{ "{:,.0f}".format(result.cif) }}</span></div>
+        <div class="result-row"><span class="result-label">Import Duty (35%)</span><span>KSh {{ "{:,.0f}".format(result.import_duty) }}</span></div>
+        <div class="result-row"><span class="result-label">Excise Duty (25%)</span><span>KSh {{ "{:,.0f}".format(result.excise_duty) }}</span></div>
+        <div class="result-row"><span class="result-label">VAT (16%)</span><span>KSh {{ "{:,.0f}".format(result.vat) }}</span></div>
+        <div class="result-row"><span class="result-label">IDF Fee (2.5%)</span><span>KSh {{ "{:,.0f}".format(result.idf) }}</span></div>
+        <div class="result-row"><span class="result-label">Railway Levy (2%)</span><span>KSh {{ "{:,.0f}".format(result.rdl) }}</span></div>
+        <div class="result-row"><span class="result-label">Road Safety (0.25%)</span><span>KSh {{ "{:,.0f}".format(result.road) }}</span></div>
+        <div class="result-row"><span class="result-label">Fixed Fees</span><span>KSh {{ "{:,.0f}".format(result.fixed) }}</span></div>
+        <div class="result-row"><span class="result-label">Total Tax</span><span>KSh {{ "{:,.0f}".format(result.total_tax) }}</span></div>
+        <div class="result-row"><span class="result-label">Landed Cost</span><span>KSh {{ "{:,.0f}".format(result.landed) }}</span></div>
+        <div class="total-box">
+            <h3>Grand Total (All Costs Included)</h3>
+            <p>KSh {{ "{:,.0f}".format(result.grand_total) }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
